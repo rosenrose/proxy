@@ -6,7 +6,7 @@ const PORT = process.env.PORT || 3000;
 axios.interceptors.response.use(
   (response) => response,
   (error) => {
-    return Promise.resolve(error);
+    return Promise.resolve(error.response);
   }
 );
 
@@ -25,7 +25,7 @@ app.get("/status", (req, res) => {
   const url = decodeURIComponent(req.query.url);
 
   axios(encodeURI(url)).then((response) => {
-    console.log(response);
+    // console.log(response);
     res.send(response.status);
   });
 });
