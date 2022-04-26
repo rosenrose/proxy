@@ -15,7 +15,7 @@ app.get("/", (req, res) => {
   res.header("Access-Control-Allow-Origin", "*");
   const url = decodeURIComponent(req.query.url);
   axios(encodeURI(url)).then((response) => {
-    res.send(response);
+    res.send({ status: response.request.res.statusCode, data: response.data });
   });
 });
 
