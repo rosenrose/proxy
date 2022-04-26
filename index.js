@@ -25,8 +25,8 @@ app.get("/status", (req, res) => {
   const url = decodeURIComponent(req.query.url);
 
   axios(encodeURI(url)).then((response) => {
-    console.log(response.status);
-    res.send(response.status);
+    // console.log(response.status);
+    res.send(String(response.status));
   });
 });
 
