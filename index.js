@@ -11,11 +11,21 @@ axios.interceptors.response.use(
 );
 
 const app = express();
-app.get("/", (req, res) => {
+app.get("/data", (req, res) => {
   res.header("Access-Control-Allow-Origin", "*");
   const url = decodeURIComponent(req.query.url);
+
   axios(encodeURI(url)).then((response) => {
-    res.send({ status: response.request.res.statusCode, data: response.data });
+    res.send(response.data);
+  });
+});
+
+app.get("/status", (req, res) => {
+  res.header("Access-Control-Allow-Origin", "*");
+  const url = decodeURIComponent(req.query.url);
+
+  axios(encodeURI(url)).then((response) => {
+    res.send(response.request.res.statusCode);
   });
 });
 
