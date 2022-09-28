@@ -1,7 +1,11 @@
-const http = require("http");
-const express = require("express");
+/**
+ * Responds to any HTTP request.
+ *
+ * @param {!express:Request} req HTTP request context.
+ * @param {!express:Response} res HTTP response context.
+ */
+
 const axios = require("axios").default;
-const PORT = process.env.PORT || 3000;
 
 axios.interceptors.response.use(
   (response) => response,
@@ -10,25 +14,24 @@ axios.interceptors.response.use(
   }
 );
 
-const app = express();
-app.get("/data", (req, res) => {
+exports.app = (req, res) => {
   res.header("Access-Control-Allow-Origin", "*");
-  const url = decodeURIComponent(req.query.url);
 
-  axios(encodeURI(url)).then((response) => {
-    res.send(response.data);
-  });
-});
+  const [path, search] = req.url.split("?");
 
-app.get("/status", (req, res) => {
-  res.header("Access-Control-Allow-Origin", "*");
-  const url = decodeURIComponent(req.query.url);
+  if (path.endsWith("/")) {
+    res.send("Test");
+  } else if (path.endsWith("/data")) {
+    const url = decodeURIComponent(req.query.url);
 
-  axios(encodeURI(url)).then((response) => {
-    // console.log(response.status);
-    res.send(String(response.status));
-  });
-});
+    axios(encodeURI(url)).then((response) => {
+      res.send(response.data);
+    });
+  } else if (path.endsWith("/status")) {
+    const url = decodeURIComponent(req.query.url);
 
-const server = http.createServer(app);
-server.listen(PORT);
+    axios(encodeURI(url)).then((response) => {
+      res.send(response.status.toString());
+    });
+  }
+};
