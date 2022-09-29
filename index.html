@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <form>
+      <input type="text" required placeholder="url" />
+      <button>request</button>
+      <output name="data">
+        <pre></pre>
+        <img src="" />
+      </output>
+      <output name="status"></output>
+    </form>
+    <script>
+      const form = document.querySelector("form");
+      form.addEventListener("submit", (event) => {
+        event.preventDefault();
+
+        const baseurl = "https://us-central1-get-youtube-thumbnail.cloudfunctions.net/proxy";
+        const url = form.querySelector("input").value.trim();
+
+        fetch(`${baseurl}/data?url=${encodeURIComponent(url)}`)
+          .then((r) => r.blob())
+          .then((blob) => {
+            console.log(blob);
+            if (blob.type.startsWith("text")) {
+              blob.text().then((text) => (form.data.querySelector("span").value = text));
+            } else if (blob.type.startsWith("image")) {
+              form.data.querySelector("img").src = URL.createObjectURL(blob);
+            }
+          });
+
+        fetch(`${baseurl}/status?url=${encodeURIComponent(url)}`)
+          .then((r) => r.text())
+          .then((text) => {
+            form.status.value = text;
+          });
+      });
+    </script>
+  </body>
+</html>
